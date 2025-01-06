@@ -50,6 +50,7 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
         self.present(alertTitle, animated: true, completion: nil)
     }
     
+    
     override func viewDidLoad() {
         tableNotes.delegate = self
         tableNotes.dataSource = self
@@ -72,7 +73,6 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
         
         confirmNew.isEnabled = false
         alertTitle.addAction(confirmNew)
-        alertTitle.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alertTitle.addTextField { (textField) in
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using: {_ in
                 //text has changed, enable/disable button

@@ -6,8 +6,14 @@
 //
 
 import UIKit
+import CoreData
 
-class UICustomTableViewBooks: UIViewController, UITableViewDelegate,UITableViewDataSource {
+class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    // data
+    var dataItems = [Book]()
+    var moc: NSManagedObjectContext!
+    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    // alert
     let alertTitle = UIAlertController(title: "New Book Title", message: "Enter new book title", preferredStyle: .alert)
 
     @IBOutlet weak var buttonNew: UIButton!
@@ -53,6 +59,12 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate,UITableViewD
         self.present(alertTitle, animated: true, completion: nil)
     }
     
+    func addDataItem() {
+        let bookItem = Book(context: moc)
+        
+        bookItem.added() = NSDate
+    }
+    
     override func viewDidLoad() {
         tableBooks.delegate = self
         tableBooks.dataSource = self
@@ -85,6 +97,7 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate,UITableViewD
             })
         }
         
+        moc = appDelegate?.persistentContainer.viewContext
         self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 }

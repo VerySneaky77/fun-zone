@@ -43,7 +43,7 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 72
+        return 60
     }
     
     @IBAction func addTableEntry(_ sender: Any) {

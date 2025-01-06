@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "note-paper-2.png",
+      "filename" : "note-paper@1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "note-paper.png",
+      "filename" : "note-paper@2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

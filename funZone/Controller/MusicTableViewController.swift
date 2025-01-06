@@ -41,6 +41,10 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
     @IBAction func addTableEntry(_ sender: Any) {
         self.present(alertTitle, animated: true, completion: nil)
     }

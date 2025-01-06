@@ -8,7 +8,7 @@
 import UIKit
 
 class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewDataSource {
-    let alertTitle = UIAlertController(title: "New Song Name", message: "Enter new song name", preferredStyle: .alert)
+    let alertTitle = UIAlertController(title: "New Song Title", message: "Enter new song title", preferredStyle: .alert)
     
     @IBOutlet weak var buttonNew: UIButton!
     @IBOutlet weak var tableMusic: UITableView!

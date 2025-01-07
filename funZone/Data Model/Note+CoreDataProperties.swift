@@ -1,0 +1,25 @@
+//
+//  Note+CoreDataProperties.swift
+//  funZone
+//
+//  Created by admin on 1/7/25.
+//
+//
+
+import Foundation
+import CoreData
+
+
+extension Note {
+
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Note> {
+        return NSFetchRequest<Note>(entityName: "Note")
+    }
+
+    @NSManaged public var name: String?
+
+}
+
+extension Note : Identifiable {
+
+}

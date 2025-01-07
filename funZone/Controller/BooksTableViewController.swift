@@ -59,10 +59,27 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
         self.present(alertTitle, animated: true, completion: nil)
     }
     
-    func addDataItem() {
-        let bookItem = Book(context: moc)
+    func addDataItem(item: String) {
+        let dataItem = Book(context: moc)
         
-        bookItem.added() = NSDate
+        dataItem.title = item
+        appDelegate?.saveContext()
+        loadData()
+    }
+    
+    func loadData() {
+        let dataRequest: NSFetchRequest<Book> = Book.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: false)
+        
+        dataRequest.sortDescriptors = [sortDescriptor]
+        
+        do {
+            try dataItems = moc.fetch(dataRequest)
+        } catch {
+            print("Unabled to load data")
+        }
+        
+        self.tableBooks.reloadData()
     }
     
     override func viewDidLoad() {
@@ -79,10 +96,7 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
                 print("Invalid input")
                 return
             }
-            var indexPath : IndexPath
-            self.dataTitles.append(text)
-            indexPath = IndexPath(row: (self.dataTitles.count - 1), section: 0)
-            self.tableBooks.insertRows(at: [indexPath], with: .fade)
+            self.addDataItem(item: text)
         }
         
         confirmNew.isEnabled = false

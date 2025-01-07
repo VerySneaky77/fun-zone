@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="23H124" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Book" representedClassName="Book" syncable="YES" codeGenerationType="class">
+    <entity name="Book" representedClassName="Book" syncable="YES">
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Music" representedClassName="Music" syncable="YES" codeGenerationType="class">
+    <entity name="Music" representedClassName="Music" syncable="YES">
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Note" representedClassName="Note" syncable="YES" codeGenerationType="class">
+    <entity name="Note" representedClassName="Note" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
 </model>

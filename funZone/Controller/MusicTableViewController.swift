@@ -6,14 +6,18 @@
 //
 
 import UIKit
+import CoreData
 
 class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewDataSource {
+    // data
+    var dataItems = [Music]()
+    var moc: NSManagedObjectContext!
+    // alert
+    let appDelegate = UIApplication.shared.delegate as? AppDelegate
     let alertTitle = UIAlertController(title: "New Song Title", message: "Enter new song title", preferredStyle: .alert)
     
     @IBOutlet weak var buttonNew: UIButton!
     @IBOutlet weak var tableMusic: UITableView!
-    // arbitrary file id, [name/title, icon name]
-    var dataTitles : [String] = []
     var dataIcons : [String] = []
     
     func numberOfSections(in tableView : UITableView) -> Int {
@@ -21,22 +25,25 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataTitles.count
+        return dataItems.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellMusic", for: indexPath) as! UICustomTableCell
+        let dataItem = dataItems[indexPath.row]
         
-        cell.cellTitle?.text = dataTitles[indexPath.row]
+        cell.cellTitle?.text = dataItem.title
         cell.cellIcon.image = UIImage(named: dataIcons[0])
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
         if editingStyle == .delete {
-            dataTitles.remove(at: indexPath.row)
+            moc.delete(dataItems[indexPath.row])
+            
+            appDelegate?.saveContext()
+            loadData()
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
@@ -47,6 +54,28 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
     
     @IBAction func addTableEntry(_ sender: Any) {
         self.present(alertTitle, animated: true, completion: nil)
+    }
+    
+    func addDataItem(item: String) {
+        let dataItem = Book(context: moc)
+        
+        dataItem.title = item
+        appDelegate?.saveContext()
+        loadData()
+        self.tableMusic.reloadData()
+    }
+    
+    func loadData() {
+        let dataRequest: NSFetchRequest<Music> = Music.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+        dataRequest.sortDescriptors = [sortDescriptor]
+        
+        do {
+            try dataItems = moc.fetch(dataRequest)
+        } catch {
+            print("Unabled to load data")
+        }
     }
     
     override func viewDidLoad() {

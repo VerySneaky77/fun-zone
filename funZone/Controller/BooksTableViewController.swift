@@ -18,8 +18,6 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
 
     @IBOutlet weak var buttonNew: UIButton!
     @IBOutlet weak var tableBooks: UITableView!
-    // arbitrary file id, [name/title, icon name]
-    var dataTitles : [String] = []
     var dataIcons : [String] = []
     
     func numberOfSections(in tableView : UITableView) -> Int {
@@ -27,22 +25,25 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataTitles.count
+        return dataItems.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellBooks", for: indexPath) as! UICustomTableCell
+        let dataItem = dataItems[indexPath.row]
         
-        cell.cellTitle?.text = dataTitles[indexPath.row]
-        cell.cellIcon.image = UIImage(named: dataIcons[0])
+        cell.cellTitle?.text = dataItem.title
+        cell.cellIcon?.image = UIImage(named: dataIcons[0])
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
         if editingStyle == .delete {
-            dataTitles.remove(at: indexPath.row)
+            moc.delete(dataItems[indexPath.row])
+            
+            appDelegate?.saveContext()
+            loadData()
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
@@ -65,11 +66,12 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
         dataItem.title = item
         appDelegate?.saveContext()
         loadData()
+        self.tableBooks.reloadData()
     }
     
     func loadData() {
         let dataRequest: NSFetchRequest<Book> = Book.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
         
         dataRequest.sortDescriptors = [sortDescriptor]
         
@@ -78,25 +80,22 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
         } catch {
             print("Unabled to load data")
         }
-        
-        self.tableBooks.reloadData()
     }
     
     override func viewDidLoad() {
-        tableBooks.delegate = self
-        tableBooks.dataSource = self
-        dataTitles = []
         dataIcons = ["iconBooks"]
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let confirmNew = UIAlertAction(title: "OK", style: .default) { action in
-            guard let text = self.alertTitle.textFields?.first?.text
+        let confirmNew = UIAlertAction(title: "OK", style: .default) { _ in
+            guard let text = self.alertTitle.textFields?[0].text
             else {
                 print("Invalid input")
+                self.alertTitle.textFields![0].text = ""
                 return
             }
             self.addDataItem(item: text)
+            self.alertTitle.textFields![0].text = ""
         }
         
         confirmNew.isEnabled = false
@@ -111,7 +110,11 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
             })
         }
         
+        tableBooks.delegate = self
+        tableBooks.dataSource = self
         moc = appDelegate?.persistentContainer.viewContext
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        loadData()
     }
 }

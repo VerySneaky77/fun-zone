@@ -79,23 +79,19 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
     }
     
     override func viewDidLoad() {
-        tableMusic.delegate = self
-        tableMusic.dataSource = self
-        dataTitles = []
         dataIcons = ["iconMusic"]
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let confirmNew = UIAlertAction(title: "OK", style: .default) { action in
-            guard let text = self.alertTitle.textFields?.first?.text
+        let confirmNew = UIAlertAction(title: "OK", style: .default) { _ in
+            guard let text = self.alertTitle.textFields?[0].text
             else {
                 print("Invalid input")
+                self.alertTitle.textFields![0].text = ""
                 return
             }
-            var indexPath : IndexPath
-            self.dataTitles.append(text)
-            indexPath = IndexPath(row: (self.dataTitles.count - 1), section: 0)
-            self.tableMusic.insertRows(at: [indexPath], with: .fade)
+            self.addDataItem(item: text)
+            self.alertTitle.textFields![0].text = ""
         }
         
         confirmNew.isEnabled = false
@@ -109,6 +105,12 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
                 confirmNew.isEnabled = charCount > 0
             })
         }
+        
+        tableMusic.delegate = self
+        tableMusic.dataSource = self
+        moc = appDelegate?.persistentContainer.viewContext
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        loadData()
     }
 }

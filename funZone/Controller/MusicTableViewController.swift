@@ -57,7 +57,7 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
     }
     
     func addDataItem(item: String) {
-        let dataItem = Book(context: moc)
+        let dataItem = Music(context: moc)
         
         dataItem.title = item
         appDelegate?.saveContext()

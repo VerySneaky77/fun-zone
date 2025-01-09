@@ -98,9 +98,19 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
             self.alertTitle.textFields![0].text = ""
         }
         
+        let cancelCustom = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            print("Canceled new entry")
+            
+            guard let text = self.alertTitle.textFields?[0].text
+            else {
+                return
+            }
+            self.alertTitle.textFields![0].text = ""
+        }
+        
         confirmNew.isEnabled = false
         alertTitle.addAction(confirmNew)
-        alertTitle.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertTitle.addAction(cancelCustom)
         alertTitle.addTextField { (textField) in
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using: {_ in
                 //text has changed, enable/disable button

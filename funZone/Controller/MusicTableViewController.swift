@@ -12,8 +12,8 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
     // data
     var dataItems = [Music]()
     var moc: NSManagedObjectContext!
-    // alert
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    // alert
     let alertTitle = UIAlertController(title: "New Song Title", message: "Enter new song title", preferredStyle: .alert)
     
     @IBOutlet weak var buttonNew: UIButton!
@@ -97,7 +97,7 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
         let cancelCustom = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             print("Canceled new entry")
             
-            guard let text = self.alertTitle.textFields?[0].text
+            guard self.alertTitle.textFields?[0].text != nil
             else {
                 return
             }

@@ -6,38 +6,53 @@
 //
 
 import UIKit
+import CoreData
 
 class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewDataSource {
-    let alertTitle = UIAlertController(title: "New Note Name", message: "Enter new note name", preferredStyle: .alert)
+    // data
+    var dataItems = [Note]()
+    var moc: NSManagedObjectContext!
+    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    var dataIcons = [String]()
+    // segue data
+    var noteSelected: Note?
     
-    @IBOutlet weak var buttonDelete: UIButton!
     @IBOutlet weak var buttonNew: UIButton!
     @IBOutlet weak var tableNotes: UITableView!
-    // arbitrary file id, [name/title, icon name]
-    var dataTitles : [String] = []
-    var dataIcons : [String] = []
+    
+    @IBAction func unwindToNoteTableView(_ unwindSegue: UIStoryboardSegue) {
+        guard let noteWriterController = unwindSegue.source as? NoteWriterController,
+              let noteToSave = noteWriterController.saveTarget
+        else {
+            return
+        }
+        
+        addDataItem(itemName: noteToSave.name!, itemContent: noteToSave.content!)
+    }
     
     func numberOfSections(in tableView : UITableView) -> Int {
         return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataTitles.count
+        return dataItems.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellNotes", for: indexPath) as! UICustomTableCell
         
-        cell.cellTitle?.text = dataTitles[indexPath.row]
+        cell.cellTitle?.text = dataItems[indexPath.row].name
         cell.cellIcon.image = UIImage(named: dataIcons[0])
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
         if editingStyle == .delete {
-            dataTitles.remove(at: indexPath.row)
+            moc.delete(dataItems[indexPath.row])
+            
+            appDelegate?.saveContext()
+            loadData()
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
@@ -46,42 +61,63 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
         return 68
     }
     
-    @IBAction func addTableEntry(_ sender: Any) {
-        self.present(alertTitle, animated: true, completion: nil)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = dataItems[indexPath.row]
+        
+        noteSelected?.name = item.name
+        noteSelected?.content = item.content
+        
+        self.performSegue(withIdentifier: "showOnNoteLoad", sender: self)
     }
     
+    func addDataItem(itemName: String, itemContent: String) {
+        let dataItem = Note(context: moc)
+        
+        dataItem.name = itemName
+        dataItem.content = itemContent
+        appDelegate?.saveContext()
+        loadData()
+        self.tableNotes.reloadData()
+    }
+    
+    func loadData() {
+        let dataRequest: NSFetchRequest<Note> = Note.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        
+        dataRequest.sortDescriptors = [sortDescriptor]
+        
+        do {
+            try dataItems = moc.fetch(dataRequest)
+        } catch {
+            print("Unabled to load data")
+        }
+    }
     
     override func viewDidLoad() {
         tableNotes.delegate = self
         tableNotes.dataSource = self
-        dataTitles = []
         dataIcons = ["iconNotes"]
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        let confirmNew = UIAlertAction(title: "OK", style: .default) { action in
-            guard let text = self.alertTitle.textFields?.first?.text
-            else {
-                print("Invalid input")
-                return
-            }
-            var indexPath : IndexPath
-            self.dataTitles.append(text)
-            indexPath = IndexPath(row: (self.dataTitles.count - 1), section: 0)
-            self.tableNotes.insertRows(at: [indexPath], with: .fade)
-        }
-        
-        confirmNew.isEnabled = false
-        alertTitle.addAction(confirmNew)
-        alertTitle.addTextField { (textField) in
-            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using: {_ in
-                //text has changed, enable/disable button
-                let charCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
                 
-                confirmNew.isEnabled = charCount > 0
-            })
-        }
-        
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        loadData()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        guard let noteObj = noteSelected
+        else {
+            print("Data was not able to load")
+            return
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let selectionIndex = tableNotes.indexPathForSelectedRow {
+            tableNotes.deselectRow(at: selectionIndex, animated: animated)
+        }
+    }
+    
 }

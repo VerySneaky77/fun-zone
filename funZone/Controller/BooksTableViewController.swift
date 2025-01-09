@@ -101,7 +101,7 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
         let cancelCustom = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             print("Canceled new entry")
             
-            guard let text = self.alertTitle.textFields?[0].text
+            guard self.alertTitle.textFields?[0].text != nil
             else {
                 return
             }

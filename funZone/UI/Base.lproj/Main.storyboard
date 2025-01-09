@@ -371,7 +371,6 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Save"/>
                                 <connections>
-                                    <action selector="saveNoteInput" destination="bnj-Nd-yKk" eventType="touchUpInside" id="O9b-iN-B65"/>
                                     <segue destination="av6-HM-T2i" kind="unwind" unwindAction="unwindToNoteTableViewWithSegue:" id="oKV-Hd-lyF"/>
                                 </connections>
                             </button>

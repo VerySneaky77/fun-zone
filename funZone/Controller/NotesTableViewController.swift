@@ -89,17 +89,18 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
         do {
             try dataItems = moc.fetch(dataRequest)
         } catch {
-            print("Unabled to load data")
+            print("Unable to load data")
         }
     }
     
     override func viewDidLoad() {
-        tableNotes.delegate = self
-        tableNotes.dataSource = self
         dataIcons = ["iconNotes"]
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-                
+        
+        tableNotes.delegate = self
+        tableNotes.dataSource = self
+        moc = appDelegate?.persistentContainer.viewContext
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         loadData()

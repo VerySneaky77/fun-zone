@@ -314,8 +314,7 @@
                                     <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="48"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <action selector="addTableEntry:" destination="n1S-2L-fdW" eventType="touchUpInside" id="Le7-G9-VC6"/>
-                                    <segue destination="bnj-Nd-yKk" kind="show" identifier="showOnAddNote" id="jhc-mO-VW9"/>
+                                    <segue destination="bnj-Nd-yKk" kind="show" identifier="showOnAdd" id="uX6-Zx-sPi"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -404,7 +403,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Z99-JF-HAx"/>
+        <segue reference="uX6-Zx-sPi"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="book.fill" catalog="system" width="128" height="95"/>

@@ -2,7 +2,7 @@
 //  Note+CoreDataProperties.swift
 //  funZone
 //
-//  Created by admin on 1/7/25.
+//  Created by admin on 1/9/25.
 //
 //
 

@@ -8,26 +8,27 @@
 import UIKit
 import CoreData
 
-class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewDataSource {
+class UICustomTableViewNotes: UIViewController, UITableViewDelegate, UITableViewDataSource {
     // data
     var dataItems = [Note]()
     var moc: NSManagedObjectContext!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var dataIcons = [String]()
     // segue data
-    var noteSelected: Note?
+    var noteSelected = TempNote()
     
     @IBOutlet weak var buttonNew: UIButton!
     @IBOutlet weak var tableNotes: UITableView!
     
     @IBAction func unwindToNoteTableView(_ unwindSegue: UIStoryboardSegue) {
-        guard let noteWriterController = unwindSegue.source as? NoteWriterController,
-              let noteToSave = noteWriterController.saveTarget
+        var noteToSave = TempNote()
+        
+        guard let noteWriterController = unwindSegue.source as? NoteWriterController
         else {
             return
         }
-        
-        addDataItem(itemName: noteToSave.name!, itemContent: noteToSave.content!)
+        noteToSave = noteWriterController.saveTarget
+        addDataItem(itemName: noteToSave.name, itemContent: noteToSave.content, itemIndex: noteToSave.index)
     }
     
     func numberOfSections(in tableView : UITableView) -> Int {
@@ -61,20 +62,18 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
         return 68
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = dataItems[indexPath.row]
+    func addDataItem(itemName: String, itemContent: String, itemIndex: Int = -1) {
+        if itemIndex > -1 {
+            dataItems[itemIndex].name = itemName
+            dataItems[itemIndex].content = itemContent
+        }
+        else {
+            let dataItem = Note(context: moc)
+            
+            dataItem.name = itemName
+            dataItem.content = itemContent
+        }
         
-        noteSelected?.name = item.name
-        noteSelected?.content = item.content
-        
-        self.performSegue(withIdentifier: "showOnNoteLoad", sender: self)
-    }
-    
-    func addDataItem(itemName: String, itemContent: String) {
-        let dataItem = Note(context: moc)
-        
-        dataItem.name = itemName
-        dataItem.content = itemContent
         appDelegate?.saveContext()
         loadData()
         self.tableNotes.reloadData()
@@ -106,19 +105,26 @@ class UICustomTableViewNotes: UIViewController, UITableViewDelegate,UITableViewD
         loadData()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        guard let noteObj = noteSelected
-        else {
-            print("Data was not able to load")
-            return
-        }
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         if let selectionIndex = tableNotes.indexPathForSelectedRow {
             tableNotes.deselectRow(at: selectionIndex, animated: animated)
         }
     }
-    
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showOnLoad" {
+            let destination = segue.destination as? NoteWriterController
+            let noteIndex = tableNotes.indexPathForSelectedRow?.item
+            
+            guard let noteName = dataItems[noteIndex!].name, let noteContent = dataItems[noteIndex!].content
+            else {
+                print("No valid data selected")
+                return
+            }
+            destination?.loadTarget.name = noteName
+            destination?.loadTarget.content = noteContent
+            destination?.loadTarget.index = noteIndex!
+            
+        }
+    }
 }

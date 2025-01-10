@@ -84,7 +84,8 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Log In"/>
                                 <connections>
-                                    <segue destination="669-JP-1EG" kind="show" id="uja-Ww-H6Q"/>
+                                    <action selector="login" destination="BYZ-38-t0r" eventType="touchUpInside" id="GRk-dg-oyz"/>
+                                    <segue destination="669-JP-1EG" kind="show" id="DUf-bG-JX1"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nm8-Ns-KXa">
@@ -92,23 +93,20 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="New Sign In" titleAlignment="center"/>
+                                <connections>
+                                    <action selector="registerNewUser:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vAy-Tm-E8O"/>
+                                </connections>
                             </button>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R48-Im-T2P">
-                                <rect key="frame" x="0.0" y="34" width="393" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <items>
-                                    <navigationItem title="Title" id="sop-Vu-jlQ"/>
-                                </items>
-                                <navigationBarAppearance key="standardAppearance"/>
-                            </navigationBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemGray6Color"/>
                     </view>
                     <connections>
                         <outlet property="buttonLogin" destination="9eU-3s-Y2a" id="wdO-83-bkc"/>
+                        <outlet property="buttonNewUserRegister" destination="nm8-Ns-KXa" id="NBN-UJ-Vba"/>
                         <outlet property="inputName" destination="E92-xd-dWi" id="SeM-hQ-4aK"/>
                         <outlet property="inputPass" destination="9vV-En-uYW" id="xZm-wk-fbo"/>
+                        <segue destination="669-JP-1EG" kind="show" identifier="loginSegue" id="New-EO-8F6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -302,6 +300,7 @@
                                         <connections>
                                             <outlet property="cellIcon" destination="zgQ-Ix-KI3" id="WMd-NW-df6"/>
                                             <outlet property="cellTitle" destination="xVJ-m7-rn2" id="wHz-AS-E0W"/>
+                                            <segue destination="bnj-Nd-yKk" kind="show" identifier="showOnLoad" id="rnh-EO-ee9"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -325,8 +324,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="buttonNew" destination="b8n-Ik-AxA" id="6BN-Rp-cEP"/>
-                        <outlet property="tableNotes" destination="1eD-A6-wiP" id="FRE-0y-qFt"/>
-                        <segue destination="bnj-Nd-yKk" kind="show" identifier="showOnLoadNote" id="Z99-JF-HAx"/>
+                        <outlet property="tableNotes" destination="1eD-A6-wiP" id="qZm-AB-7ZJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PuR-dm-W0A" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -341,7 +339,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tov-Zd-i2V">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" keyboardDismissMode="interactive" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tov-Zd-i2V">
                                 <rect key="frame" x="16" y="156" width="361" height="476"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -355,7 +353,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
-                                    <action selector="checkOnNoteName:" destination="bnj-Nd-yKk" eventType="editingDidEnd" id="pLO-RV-Abw"/>
+                                    <action selector="checkOnNoteName:" destination="bnj-Nd-yKk" eventType="editingChanged" id="ahc-xe-0BX"/>
                                 </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Note Name:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="noY-3O-xBV">
@@ -371,7 +369,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Save"/>
                                 <connections>
-                                    <segue destination="av6-HM-T2i" kind="unwind" unwindAction="unwindToNoteTableViewWithSegue:" id="oKV-Hd-lyF"/>
+                                    <segue destination="av6-HM-T2i" kind="unwind" unwindAction="unwindToNoteTableView:" id="07K-Kw-c2t"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J2g-xg-Y5L">
@@ -402,7 +400,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="uX6-Zx-sPi"/>
+        <segue reference="rnh-EO-ee9"/>
+        <segue reference="New-EO-8F6"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="book.fill" catalog="system" width="128" height="95"/>

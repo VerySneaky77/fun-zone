@@ -20,6 +20,8 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var tableBooks: UITableView!
     var dataIcons : [String] = []
     
+    // MARK: TableView functions
+    
     func numberOfSections(in tableView : UITableView) -> Int {
         return 1
     }
@@ -56,14 +58,22 @@ class UICustomTableViewBooks: UIViewController, UITableViewDelegate, UITableView
         return true
     }
     
+    // MARK: CoreData manipulation
+    
     @IBAction func addTableEntry(_ sender: Any) {
         self.present(alertTitle, animated: true, completion: nil)
     }
     
     func addDataItem(item: String) {
-        let dataItem = Book(context: moc)
+        if let index = dataItems.firstIndex(where: { $0.title == item }) {
+            dataItems[index].title = item
+        }
+        else {
+            let dataItem = Book(context: moc)
+            
+            dataItem.title = item
+        }
         
-        dataItem.title = item
         appDelegate?.saveContext()
         loadData()
         self.tableBooks.reloadData()

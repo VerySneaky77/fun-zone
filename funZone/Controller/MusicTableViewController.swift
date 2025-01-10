@@ -7,19 +7,24 @@
 
 import UIKit
 import CoreData
+import UniformTypeIdentifiers
 
-class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewDataSource {
+class UICustomTableViewMusic: UIViewController, UIDocumentPickerDelegate, UITableViewDelegate,UITableViewDataSource {
     // data
     var dataItems = [Music]()
     var moc: NSManagedObjectContext!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     // alert
     let alertTitle = UIAlertController(title: "New Song Title", message: "Enter new song title", preferredStyle: .alert)
+    // documents and files
+    let supportedTypes: [UTType] = [UTType.audio]
+    var currentActiveFile = URL.currentDirectory()
     
     @IBOutlet weak var buttonNew: UIButton!
     @IBOutlet weak var tableMusic: UITableView!
     var dataIcons : [String] = []
     
+    // MARK: TableView functions
     func numberOfSections(in tableView : UITableView) -> Int {
         return 1
     }
@@ -56,10 +61,19 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
         self.present(alertTitle, animated: true, completion: nil)
     }
     
+    // MARK: CoreData manipulation
+    
     func addDataItem(item: String) {
-        let dataItem = Music(context: moc)
+        if let index = dataItems.firstIndex(where: { $0.title == item }) {
+            dataItems[index].title = item
+        }
+        else {
+            let dataItem = Music(context: moc)
+            
+            dataItem.title = item
+            dataItem.fileUrl = ""
+        }
         
-        dataItem.title = item
         appDelegate?.saveContext()
         loadData()
         self.tableMusic.reloadData()
@@ -78,6 +92,33 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
         }
     }
     
+    // MARK: Document interaction functionality
+    
+    func selectFile() {
+        let docPickController = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes, asCopy: true)
+        
+        docPickController.allowsMultipleSelection = false
+        self.present(docPickController, animated: true, completion: nil)
+        
+        //currentActiveFile.path(percentEncoded: false) = docPickController.path
+        
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let targetUrl = urls.first
+        else {
+            print("url access did not work")
+            return
+        }
+        currentActiveFile = targetUrl
+    }
+    
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: UIViewController functions
+    
     override func viewDidLoad() {
         dataIcons = ["iconMusic"]
         super.viewDidLoad()
@@ -90,6 +131,7 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
                 self.alertTitle.textFields![0].text = ""
                 return
             }
+            //self.selectFile()
             self.addDataItem(item: text)
             self.alertTitle.textFields![0].text = ""
         }
@@ -123,4 +165,5 @@ class UICustomTableViewMusic: UIViewController, UITableViewDelegate,UITableViewD
         
         loadData()
     }
+    
 }

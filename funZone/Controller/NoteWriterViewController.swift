@@ -6,29 +6,19 @@
 //
 
 import UIKit
+import CoreData
 
 class NoteWriterController: UIViewController, UITextFieldDelegate {
-    var saveTarget: Note?
-    var loadTarget: Note?
+    var saveTarget = TempNote()
+    var loadTarget = TempNote()
     
     @IBOutlet weak var noteNameTextbox: UITextField!
     @IBOutlet weak var noteInput: UITextView!
     @IBOutlet weak var buttonSave: UIButton!
     @IBOutlet weak var buttonClear: UIButton!
     
-    @IBAction func segueToNoteWriterView(_ segue: UIStoryboardSegue) {
-        guard let noteViewController = segue.source as? UICustomTableViewNotes,
-              let loadTarget = noteViewController.noteSelected
-        else{
-            return
-        }
-        
-        noteNameTextbox.text = loadTarget.name
-        noteInput.text = loadTarget.content
-    }
-    
     @IBAction func clearNoteInput() {
-        noteNameTextbox.text = ""
+        noteInput.text = ""
     }
     
     @IBAction func checkOnNoteName(_ sender: UITextField) {
@@ -50,31 +40,30 @@ class NoteWriterController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        if !loadTarget.isEmpty {
+            noteNameTextbox.text = loadTarget.name
+            noteInput.text = loadTarget.content
+            
+            buttonSave.isEnabled = true
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let noteObj = Note()
+        let index = loadTarget.index
         
-        guard noteNameTextbox.text != nil, noteInput.text != nil
+        guard let name = noteNameTextbox.text, let content = noteInput.text, name != ""
         else {
             print("Unable to save the note content")
             return
         }
         
-        if noteInput.text.isEmpty {
-            let alert = UIAlertController(title: "No Note Çontent", message: "Note will save without content", preferredStyle: .alert)
-            
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(alert, animated: true, completion: nil)
-        }
-        noteObj.name = noteNameTextbox.text
-        noteObj.content = noteInput.text
-        saveTarget = noteObj
+        saveTarget.name = name
+        saveTarget.content = content
+        saveTarget.index = index
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        if let noteContent = noteInput.text {
-            noteInput.text = ""
-        }
+    override func viewWillDisappear (_ animated: Bool) {
+        noteInput.text = ""
+        noteNameTextbox.text = ""
     }
 }

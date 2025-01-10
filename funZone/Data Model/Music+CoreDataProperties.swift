@@ -17,6 +17,7 @@ extension Music {
     }
 
     @NSManaged public var title: String?
+    @NSManaged public var fileUrl: String?
 
 }
 

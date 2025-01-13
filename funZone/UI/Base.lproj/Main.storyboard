@@ -85,7 +85,6 @@
                                 <buttonConfiguration key="configuration" style="filled" title="Log In"/>
                                 <connections>
                                     <action selector="login" destination="BYZ-38-t0r" eventType="touchUpInside" id="GRk-dg-oyz"/>
-                                    <segue destination="669-JP-1EG" kind="show" id="DUf-bG-JX1"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nm8-Ns-KXa">
@@ -401,7 +400,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="rnh-EO-ee9"/>
-        <segue reference="New-EO-8F6"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="book.fill" catalog="system" width="128" height="95"/>

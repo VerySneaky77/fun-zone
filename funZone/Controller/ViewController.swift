@@ -10,11 +10,9 @@ import CoreData
 
 class ViewController: UIViewController, UITextFieldDelegate {
     // data
-    /*
     var dataItems = [AppUser]()
     var moc: NSManagedObjectContext!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-     */
     // requisites
     let loginRequisites = LoginAttributes(minLengthPassword: 1, minLengthUsername: 1, maxLengthPassword: 20, maxLengthUsername: 30)
     
@@ -32,7 +30,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func login() {
-        /*
+        
         if existingUserCheck() {
             self.performSegue(withIdentifier: "loginSegue", sender: self)
         }
@@ -42,7 +40,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(alert, animated: true, completion: nil)
         }
-         */
+         
     }
     
     @IBAction func registerNewUser(_ sender: Any) {
@@ -60,14 +58,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.present(alert, animated: true, completion: nil)
         return
     }
-    /*
+    
     func existingUserCheck() -> Bool {
         if let dataItem = dataItems.first(where: { $0.name == inputName.text! }) {
             return (inputPass.text! == dataItem.password)        } else {
             return false
         }
     }
-     */
+     
     
     func inputValidation()  {
         guard
@@ -80,7 +78,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         buttonLogin.isEnabled = true
         return
     }
-    /*
+    
     func addDataItem(itemName: String, itemPass: String) {
         if let index = dataItems.firstIndex(where: { $0.name == itemName }) {
             dataItems[index].password = itemPass
@@ -108,7 +106,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             print("Unabled to load data")
         }
     }
-     */
+     
     
     // MARK: ViewController functions
     
